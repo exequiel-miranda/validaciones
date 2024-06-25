@@ -12,13 +12,8 @@ import androidx.core.view.WindowInsetsCompat
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
         setContentView(R.layout.activity_main)
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
-        }
+
         //1- Mando a llamar a todos los elementos de la vista
         val txtNombre = findViewById<EditText>(R.id.txtNombre)
         val txtCorreo = findViewById<EditText>(R.id.txtCorreo)
@@ -93,21 +88,25 @@ class MainActivity : AppCompatActivity() {
             } else if (edad.toInt() <= 0 || edad.toInt() > 110) {
                 txtEdad.error = "Ingrese una edad valida"
                 hayErrores = true
-            }else{
+            } else {
                 txtEdad.error = null
             }
 
 
             // TODO: 3- Validar que el correo tenga un formato de correo electrónico
-            // Valida que tenga el formato [nombre.apellido@dominio.extension]
+            // Valida que tenga el formato [nombre.apellido123@dominio.extension]
             // Por ejemplo: exequiel.miranda314@gmail.com
-            //  Usando: [A-Za-z0-9+_.-]+ @ [a-z]+ [.]+ [a-z]+
-            // Ejemplo : [nombre.apellido @ dominio . extension]
+            //  Usando:   [A-Za-z0-9+_.-]+ @   [a-z]+  [.] + [a-z]+
+            // Ejemplo : [nombre.apellido] @ [dominio] [.] [extension]
             //
-            //Si queremos que sea nombre.apellido@ricaldone.edu.sv, sería la misma logica
-            // Usando: [A-Za-z0-9+_.-]+@[a-z]+[.]+[a-z]+[.]+[a-z]+
+            //Si queremos que sea:
+            // bryan_miranda@ricaldone.edu.sv, sería usando la misma logica:
+            //
+            //  Usando:  [A-Za-z0-9+_.-]+ @    [a-z]+   [.]+[a-z]+[.]+[a-z]+
+            // Ejemplo: [nombre_apellido] @ [ricaldone] [.] [edu] [.] [sv]
+            //
             // Solo se reemplaza lo que está entre comillas
-            if (!correo.matches(Regex("[A-Za-z0-9+_.-]+ @ [a-z]+ [.]+ [a-z]+"))) {
+            if (!correo.matches(Regex("[a-zA-Z0-9._-]+@[a-z]+[.][a-z]+"))) {
                 txtCorreo.error = "El correo no tiene un formato válido"
                 hayErrores = true
             } else {
@@ -141,7 +140,14 @@ class MainActivity : AppCompatActivity() {
             }
 
             // Función para guardar los datos
-            fun guardarDatos(nombre: String, correo: String, edad: Int, telefono: String, DUI: String, contraseña: String) {
+            fun guardarDatos(
+                nombre: String,
+                correo: String,
+                edad: Int,
+                telefono: String,
+                DUI: String,
+                contraseña: String
+            ) {
                 // Lógica para guardar los datos
                 // Aqui tendría que ir lo de oracle
                 Toast.makeText(this, "Datos guardados", Toast.LENGTH_SHORT).show()
@@ -150,7 +156,7 @@ class MainActivity : AppCompatActivity() {
             // Si hay errores, no procede a guardar los datos
             if (hayErrores) {
                 //Hacer algo si hay errores
-            }else{
+            } else {
                 // Si todas las validaciones son correctas, procede a guardar los datos
                 guardarDatos(nombre, correo, edad.toInt(), telefono, DUI, contrasenia)
                 limpiarCampos()
